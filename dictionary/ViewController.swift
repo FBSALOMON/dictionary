@@ -58,14 +58,25 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
             displayTraduction.alpha = 0.5
-            var temp = Array(dictStrings.keys)
+            var temp = Array(dictStrings.keys).sorted()
+            var temp1 = Array(dictStrings.values).sorted()
             let key = temp[indexPath.item]
-            let index = dictStrings.index(where: {t in
-                return t.key == key
-            })
-            dictStrings.remove(at: index!)
-            sortedTuple = dictStrings.sorted(by: {$0.0.lowercased() < $1.0.lowercased()})
+            let key1 = temp1[indexPath.item]
+            if flagBool == 1 {
+                let index = dictStrings.index(where: {t in
+                    return t.key == key
+                })
+                dictStrings.remove(at: index!)
+                sortedTuple = dictStrings.sorted(by: {$0.0.lowercased() < $1.0.lowercased()})
+            } else {
+                let index = dictStrings.index(where: {t in
+                    return t.value == key1
+                })
+                dictStrings.remove(at: index!)
+                sortedTuple = dictStrings.sorted(by: {$0.1.lowercased() < $1.1.lowercased()})
+            }
             tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            tableView.reloadData()
             UserDefaults.standard.set(dictStrings, forKey: "mots")
             displayTraduction.text = ""
         }
@@ -131,10 +142,10 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
                 addTraduction.setTitle("ADD", for: UIControlState.normal)
                 button.alpha = 0.5
                 button.backgroundColor = UIColor.red
-                tabview.reloadData()
                 displayTraduction.text = ""
                 displayTheme.text = "THEME: Food"
                 sortTuple()
+                tabview.reloadData()
             } else {
                 flagBool = 0
                 champEng.placeholder = "Anglais mot"
@@ -142,10 +153,10 @@ class ViewController: UIViewController,UITableViewDelegate, UITableViewDataSourc
                 addTraduction.setTitle("AJOUTER", for: UIControlState.normal)
                 button.alpha = 1.0
                 button.backgroundColor = UIColor.red
-                tabview.reloadData()
                 displayTraduction.text = ""
                 displayTheme.text = "THÈME: Nourriture"
                 sortTuple()
+                tabview.reloadData()
             }
         }
     }
